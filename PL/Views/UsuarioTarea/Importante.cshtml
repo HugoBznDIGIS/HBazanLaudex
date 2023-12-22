@@ -1,0 +1,60 @@
+﻿@model BL.UsuarioTarea
+@{
+    ViewData["Title"] = "Importante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.UsuariosTareas.Count > 0)
+{
+    <h1 class="display-1">Importantes ☀️</h1>
+
+    <div class="justify-content-center mt-4">
+        <div class="row">
+            @foreach (BL.UsuarioTarea usuarioTarea in Model.UsuariosTareas)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card m-3 border-warning shadow" id="cardEffect" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="https://cdn.pixabay.com/photo/2017/10/10/07/01/focus-2836211_640.png" class="img-fluid rounded-circle p-3" alt="image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">@usuarioTarea.Tarea.Titulo</h5>
+                                    <p class="card-text">@usuarioTarea.Tarea.Descripcion</p>
+                                    <p>@(usuarioTarea.Tarea.Importante ? "☀️ Importante" : "📰 No es importante")</p>
+
+                                    @{
+                                        switch (usuarioTarea.Tarea.Estado.IdEstado)
+                                        {
+                                            case 1:
+                                                <p>🥳 Completado</p>
+                                                break;
+
+                                            case 2:
+                                                <p>🚦 Pendiente</p>
+                                                break;
+
+                                            case 3:
+                                                <p>⚠️ En proceso</p>
+                                                break;
+
+                                            default:
+                                                <p>⚠️ En proceso</p>
+                                                break;
+                                        }
+                                    }
+                                    <p class="card-text"><small class="text-muted">@usuarioTarea.Tarea.FechaVencimiento</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="display-1">No hay tareas importante...</h1>
+}

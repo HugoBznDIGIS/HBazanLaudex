@@ -1,0 +1,109 @@
+﻿@model BL.Usuario
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LogIn</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PL.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container ml-5">
+        <div class="card bg-gradient bg-black text-white purple-border mt-5">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" class="img-fluid m-4" width="350rem" alt="UserLogin Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body p-5">
+                        <div class="col-12">
+                            <h1 class="card-title display-1">Bienvenido 😶‍🌫️</h1>
+                            <p class="card-text lead">Por favor, rellena los campos</p>
+
+                            <div id="loginHidden">
+                                <div id="login"></div>
+                            </div>
+                            <div id="registerHidden">
+                                @using (Html.BeginForm("Register", "Login", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    <text>
+                                        <div id="register" class="row gap-1"></div>
+                                    </text>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        Login();
+    });
+
+    function Login() {
+        $("#register").text("");
+        $("#registerHidden").attr("hidden", true);
+        $("#loginHidden").attr("hidden", false);
+        var loginHtml =
+            '<form method="post">'
+            + '<label for="username" class="lead">Username:</label>'
+            + '<div class="input-group flex-nowrap">'
+            + '<span class="input-group-text">👤</span>'
+            + '<input id="username" name="username" class="form-control" type="text" placeholder="Username" required>'
+            + '</div>'
+            + '<label for="Password" class="lead mt-3">Password:</label>'
+            + '<div class="input-group flex-nowrap">'
+            + '<span class="input-group-text">🔒</span>'
+            + '<input id="Password" name="psswd" class="form-control" type="password" placeholder="Password" required>'
+            + '</div>'
+
+            + '<div class="d-flex w-75 gap-2 mt-3">'
+            + '<input type="submit" class="btn btn-outline-primary" value="Login" />'
+            + '<button class="btn btn-outline-info" onclick="Register()">Register</button>'
+            + '</div>'
+            + '</form>';
+
+        $("#login").append(loginHtml);
+    }
+
+    function Register() {
+        $("#login").html("");
+        $("#loginHidden").attr("hidden", true);
+        $("#registerHidden").attr("hidden", false);
+        var registerHtml =
+        '@Html.HiddenFor(model => Model.IdUsuario)'
+            + '<div class="col-12 col-md-5">'
+            + '@Html.LabelFor(model => Model.Username)'
+            + '<div class="input-group flex-nowrap">'
+            + '<span class="input-group-text" >⭐</span>'
+            + '@Html.TextBoxFor(model => Model.Username, new { @class = "form-control", @placeholder="Username" })'
+            + '</div>'
+            + '</div>'
+            + '<div class="col-12 col-md-5">'
+            + '@Html.LabelFor(model => Model.Password)'
+            + '<div class="input-group flex-nowrap" >'
+            + '<span class="input-group-text" >🔒</span>'
+            + '<input type = "password" class="form-control" placeholder = "Password" name = "psswd" />'
+            + '</div>'
+            + '</div>'
+            + '<div class="col-12 mt-3">'
+            + '<input type="submit" value = "Registrar" class="btn btn-outline-primary" />'
+            + '<button class="btn btn-outline-danger mx-2" onclick="Login()">Regresar</button>';
+            + '</div>'
+
+        $("#register").append(registerHtml);
+    }
+
+</script>

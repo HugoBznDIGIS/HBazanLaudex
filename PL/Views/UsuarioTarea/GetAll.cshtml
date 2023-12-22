@@ -1,0 +1,167 @@
+﻿@model BL.UsuarioTarea
+@{
+    ViewData["Title"] = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-12">
+    <button class="btn btn-outline-primary w-100" onclick="Form()">Agregar tarea</button>
+
+    <div id="form" hidden>
+        <div class="border border-2 rounded-3 p-5 border-warning">
+            <p class="lead">Ingrese los datos de la nueva tarea:</p>
+
+            @using (Html.BeginForm("Form", "UsuarioTarea", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.HiddenFor(model => Model.Tarea.IdTarea)
+                <div class="row">
+                    <div class="col-md-6 col-lg-2">
+                        @Html.LabelFor(model => Model.Tarea.Titulo)
+                        @Html.TextBoxFor(model => Model.Tarea.Titulo, new { @class = "form-control", @placeholder = "Titulo", @required = true })
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        @Html.LabelFor(model => Model.Tarea.Descripcion)
+                        @Html.TextAreaFor(model => Model.Tarea.Descripcion, new { @class = "form-control", @placeholder = "Descripcion", @required = true })
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.LabelFor(model => Model.Tarea.FechaVencimiento)
+                        @Html.TextBoxFor(model => Model.Tarea.FechaVencimiento, new { @type = "datetime-local", @class = "form-control", @required = true })
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="">Estado</label>
+                        <select class="form-control" id="Tarea_Estado" name="estado" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="1">Completado</option>
+                            <option value="2">Pendiente</option>
+                            <option value="3">En proceso</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 col-lg-1">
+                        <label id="lblImportante" for="chkImportante">📰</label>
+                        @Html.CheckBoxFor(model => Model.Tarea.Importante, new { @class = "form-check-input", @id = "chkImportante", @onclick = "cambiarTextoLabel()" })
+                    </div>
+                    <div class="col-12 mt-2">
+                        <input type="submit" value="Agregar" class="btn btn-outline-primary" />
+                    </div>
+                </div>
+            }
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-danger" onclick="CancelForm(), limpiarFormulario()">Cancelar</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@if (Model.UsuariosTareas.Count > 0)
+{
+    <h1 class="display-1">Tareas 💡</h1>
+
+    <div class="justify-content-center mt-4">
+        <div class="row">
+            @foreach (BL.UsuarioTarea usuarioTarea in Model.UsuariosTareas)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card m-3 border-primary shadow" id="cardEffect" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="https://cdn.pixabay.com/photo/2017/10/10/07/01/focus-2836211_640.png" class="img-fluid rounded-circle p-3" alt="image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">@usuarioTarea.Tarea.Titulo</h5>
+                                    <p class="card-text">@usuarioTarea.Tarea.Descripcion</p>
+                                    <p>@(usuarioTarea.Tarea.Importante ? "☀️ Importante" : "📰 No es importante")</p>
+
+                                    @{
+                                        switch (usuarioTarea.Tarea.Estado.IdEstado)
+                                        {
+                                            case 1:
+                                                <p>🥳 Completado</p>
+                                                break;
+
+                                            case 2:
+                                                <p>🚦 Pendiente</p>
+                                                break;
+
+                                            case 3:
+                                                <p>⚠️ En proceso</p>
+                                                break;
+
+                                            default:
+                                                <p>⚠️ En proceso</p>
+                                                break;
+                                        }
+                                    }
+                                    <p class="card-text"><small class="text-muted">@usuarioTarea.Tarea.FechaVencimiento</small></p>
+                                    <a class="btn btn-outline-danger" href="@Url.ActionLink("Delete", "UsuarioTarea", new { idTarea = usuarioTarea.Tarea.IdTarea, idUsuarioTarea = usuarioTarea.IdUsuarioTarea })">Eliminar</a>
+                                    <a class="btn btn-outline-info" onclick="editarTarea(@usuarioTarea.Tarea.IdTarea)">Editar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="display-1">No hay tareas...</h1>
+}
+
+@section scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        function Form() {
+            $("#form").attr("hidden", false);
+        }
+
+        function CancelForm() {
+            $("#form").attr("hidden", true);
+        }
+
+        function cambiarTextoLabel() {
+            var isChecked = $('#chkImportante').is(':checked');
+            var label = $('#lblImportante');
+
+            label.text(isChecked ? '☀️' : '📰');
+        }
+
+        function editarTarea(taskId) {
+            $.ajax({
+                url: '/UsuarioTarea/GetById',
+                type: 'GET',
+                data: { idTarea: taskId },
+                success: function (data) {
+                    console.log(data);
+                    llenarFormulario(data);
+                    $("#form").attr("hidden", false);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function llenarFormulario(data) {
+            $('#Tarea_IdTarea').val(data.idTarea);
+            $('#Tarea_Titulo').val(data.titulo);
+            $('#Tarea_Descripcion').val(data.descripcion);
+            $('#Tarea_FechaVencimiento').val(data.fechaVencimiento);
+            $('#Tarea_Estado').val(data.estado.idEstado);
+            $('#chkImportante').prop('checked', data.importante);
+        }
+
+        function limpiarFormulario() {
+            $('#Tarea_IdTarea').val("");
+            $('#Tarea_Titulo').val("");
+            $('#Tarea_Descripcion').val("");
+            $('#Tarea_FechaVencimiento').val("");
+            $('#Tarea_Estado').val("");
+            $('#chkImportante').prop('unchecked');
+        }
+    </script>
+}
