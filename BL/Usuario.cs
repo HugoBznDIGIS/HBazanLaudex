@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DL;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BL
@@ -13,14 +14,15 @@ namespace BL
         public bool Correct { get; set; }
 
         // METHODS
-        public static bool Add(Usuario usuario)
+        public static bool Add(Usuario usuario, DataSourceProvider myConnection)
         {
             bool correct;
 
             try
             {
+                string connection = myConnection.GetConnectionString();
                 var optionsBuilder = new DbContextOptionsBuilder<DL.HBazanLaudexContext>();
-                optionsBuilder.UseSqlServer("Server=.; Database= HBazanLaudex; TrustServerCertificate=True;Trusted_Connection=True;User ID=sa;Password=pass@word1;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(connection);
 
                 using (DL.HBazanLaudexContext context = new DL.HBazanLaudexContext(optionsBuilder.Options))
                 {
@@ -45,14 +47,15 @@ namespace BL
             return correct;
         }
 
-        public static Usuario GetByUsername(string username)
+        public static Usuario GetByUsername(string username, DataSourceProvider myConnection)
         {
             Usuario usuario = new Usuario();
 
             try
             {
+                string connection = myConnection.GetConnectionString();
                 var optionsBuilder = new DbContextOptionsBuilder<DL.HBazanLaudexContext>();
-                optionsBuilder.UseSqlServer("Server=.; Database= HBazanLaudex; TrustServerCertificate=True;Trusted_Connection=True;User ID=sa;Password=pass@word1;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(connection);
 
                 using (DL.HBazanLaudexContext context = new DL.HBazanLaudexContext(optionsBuilder.Options))
                 {

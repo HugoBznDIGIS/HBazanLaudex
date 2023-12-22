@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DL;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,14 +24,15 @@ namespace BL
         public bool Importante { get; set; }
         public Estado? Estado { get; set; }
 
-        public static bool Add(Tarea tarea, int idUsuario)
+        public static bool Add(Tarea tarea, int idUsuario, DataSourceProvider myConnection)
         {
             bool correct;
 
             try
             {
+                string connection = myConnection.GetConnectionString();
                 var optionsBuilder = new DbContextOptionsBuilder<DL.HBazanLaudexContext>();
-                optionsBuilder.UseSqlServer("Server=.; Database= HBazanLaudex; TrustServerCertificate=True;Trusted_Connection=True;User ID=sa;Password=pass@word1;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(connection);
 
                 using (DL.HBazanLaudexContext context = new DL.HBazanLaudexContext(optionsBuilder.Options))
                 {
@@ -55,14 +57,15 @@ namespace BL
             return correct;
         }
 
-        public static bool Delete(int idUsuario, int idTarea, int idUsuarioTarea)
+        public static bool Delete(int idUsuario, int idTarea, int idUsuarioTarea, DataSourceProvider myConnection)
         {
             bool correct;
 
             try
             {
+                string connection = myConnection.GetConnectionString();
                 var optionsBuilder = new DbContextOptionsBuilder<DL.HBazanLaudexContext>();
-                optionsBuilder.UseSqlServer("Server=.; Database= HBazanLaudex; TrustServerCertificate=True;Trusted_Connection=True;User ID=sa;Password=pass@word1;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(connection);
 
                 using (DL.HBazanLaudexContext context = new DL.HBazanLaudexContext(optionsBuilder.Options))
                 {
@@ -87,14 +90,15 @@ namespace BL
             return correct;
         }
 
-        public static bool Update(BL.Tarea tarea)
+        public static bool Update(BL.Tarea tarea, DataSourceProvider myConnection)
         {
             bool correct;
 
             try
             {
+                string connection = myConnection.GetConnectionString();
                 var optionsBuilder = new DbContextOptionsBuilder<DL.HBazanLaudexContext>();
-                optionsBuilder.UseSqlServer("Server=.; Database= HBazanLaudex; TrustServerCertificate=True;Trusted_Connection=True;User ID=sa;Password=pass@word1;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(connection);
 
                 using (DL.HBazanLaudexContext context = new DL.HBazanLaudexContext(optionsBuilder.Options))
                 {

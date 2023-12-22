@@ -1,12 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DL;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PL.Controllers
 {
     public class UsuarioTareaController : Controller
     {
+        private readonly IConfiguration _configuration;
+        private static DataSourceProvider instancia;
+        public UsuarioTareaController(Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment, IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        public DataSourceProvider ObtenerInstancia()
+        {
+            if (instancia == null)
+            {
+                instancia = new DataSourceProvider(_configuration);
+            }
+            return instancia;
+        }
         public IActionResult GetAll()
         {
-            List<object> list = BL.UsuarioTarea.GetAll((int)HttpContext.Session.GetInt32("IdUsuario"));
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            List<object> list = BL.UsuarioTarea.GetAll((int)HttpContext.Session.GetInt32("IdUsuario"), myConnection);
             BL.UsuarioTarea usuarioTarea = new BL.UsuarioTarea();
             usuarioTarea.UsuariosTareas = list;
 
@@ -22,7 +39,9 @@ namespace PL.Controllers
 
         public IActionResult Importante()
         {
-            List<object> list = BL.UsuarioTarea.GetImportante((int)HttpContext.Session.GetInt32("IdUsuario"));
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            List<object> list = BL.UsuarioTarea.GetImportante((int)HttpContext.Session.GetInt32("IdUsuario"), myConnection);
             BL.UsuarioTarea usuarioTarea = new BL.UsuarioTarea();
             usuarioTarea.UsuariosTareas = list;
 
@@ -38,7 +57,9 @@ namespace PL.Controllers
 
         public IActionResult Completado()
         {
-            List<object> list = BL.UsuarioTarea.GetCompletado((int)HttpContext.Session.GetInt32("IdUsuario"));
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            List<object> list = BL.UsuarioTarea.GetCompletado((int)HttpContext.Session.GetInt32("IdUsuario"), myConnection);
             BL.UsuarioTarea usuarioTarea = new BL.UsuarioTarea();
             usuarioTarea.UsuariosTareas = list;
 
@@ -54,7 +75,9 @@ namespace PL.Controllers
 
         public IActionResult Pendiente()
         {
-            List<object> list = BL.UsuarioTarea.GetPendiente((int)HttpContext.Session.GetInt32("IdUsuario"));
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            List<object> list = BL.UsuarioTarea.GetPendiente((int)HttpContext.Session.GetInt32("IdUsuario"), myConnection);
             BL.UsuarioTarea usuarioTarea = new BL.UsuarioTarea();
             usuarioTarea.UsuariosTareas = list;
 
@@ -71,13 +94,15 @@ namespace PL.Controllers
         [HttpPost]
         public IActionResult Form(BL.Tarea tarea, int estado)
         {
+            DataSourceProvider myConnection = ObtenerInstancia();
+
             bool correct;
             tarea.Estado = new BL.Estado();
             tarea.Estado.IdEstado = estado;
 
             if (tarea.IdTarea == 0)
             {
-                correct = BL.Tarea.Add(tarea, (int)HttpContext.Session.GetInt32("IdUsuario"));
+                correct = BL.Tarea.Add(tarea, (int)HttpContext.Session.GetInt32("IdUsuario"), myConnection);
 
                 if (correct)
                 {
@@ -91,7 +116,7 @@ namespace PL.Controllers
             else
             {
                 // UPDATE
-                correct = BL.Tarea.Update(tarea);
+                correct = BL.Tarea.Update(tarea, myConnection);
 
                 if (correct)
                 {
@@ -108,7 +133,9 @@ namespace PL.Controllers
 
         public IActionResult Delete(int idTarea, int idUsuarioTarea)
         {
-            bool correct = BL.Tarea.Delete((int)HttpContext.Session.GetInt32("IdUsuario"), idTarea, idUsuarioTarea);
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            bool correct = BL.Tarea.Delete((int)HttpContext.Session.GetInt32("IdUsuario"), idTarea, idUsuarioTarea, myConnection);
 
             if (correct)
             {
@@ -124,7 +151,9 @@ namespace PL.Controllers
 
         public IActionResult GetById(int idTarea)
         {
-            BL.UsuarioTarea usuarioTarea = BL.UsuarioTarea.GetById((int)HttpContext.Session.GetInt32("IdUsuario"), idTarea);
+            DataSourceProvider myConnection = ObtenerInstancia();
+
+            BL.UsuarioTarea usuarioTarea = BL.UsuarioTarea.GetById((int)HttpContext.Session.GetInt32("IdUsuario"), idTarea, myConnection);
 
             if (usuarioTarea == null || usuarioTarea.Tarea == null)
             {
