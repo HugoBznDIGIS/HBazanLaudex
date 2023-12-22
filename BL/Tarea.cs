@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,14 @@ namespace BL
     public class Tarea
     {
         public int IdTarea { get; set; }
+        [Required(ErrorMessage = "El Titulo es obligatorio")]
+        [StringLength(30, MinimumLength = 1, ErrorMessage = "El nombre de usuario debe de ser menor a 50 caracteres y mayor a 1")]
         public string Titulo { get; set; }
+
+        [Required(ErrorMessage = "El descripcion es obligatorio")]
+        [StringLength(200, MinimumLength = 1, ErrorMessage = "El nombre de usuario debe de ser menor a 50 caracteres y mayor a 1")]
         public string Descripcion { get; set; }
+        [Required(ErrorMessage = "La fecha debe es obligatoria")]
         public DateTime FechaVencimiento { get; set; }
         public bool Importante { get; set; }
         public Estado? Estado { get; set; }

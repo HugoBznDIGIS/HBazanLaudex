@@ -38,19 +38,16 @@
                         </select>
                     </div>
                     <div class="col-md-6 col-lg-1">
-                        <label id="lblImportante" for="chkImportante">📰</label>
+                        <label for="chkImportante">Importante</label>
+                        <label id="lblImportante">📰</label>
                         @Html.CheckBoxFor(model => Model.Tarea.Importante, new { @class = "form-check-input", @id = "chkImportante", @onclick = "cambiarTextoLabel()" })
                     </div>
-                    <div class="col-12 mt-2">
+                    <div class="col-12 mt-3">
                         <input type="submit" value="Agregar" class="btn btn-outline-primary" />
+                        <button class="btn btn-outline-danger" onclick="CancelForm(), limpiarFormulario()">Cancelar</button>
                     </div>
                 </div>
             }
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-outline-danger" onclick="CancelForm(), limpiarFormulario()">Cancelar</button>
-
-            </div>
-
         </div>
     </div>
 </div>
@@ -96,8 +93,8 @@
                                         }
                                     }
                                     <p class="card-text"><small class="text-muted">@usuarioTarea.Tarea.FechaVencimiento</small></p>
-                                    <a class="btn btn-outline-danger" href="@Url.ActionLink("Delete", "UsuarioTarea", new { idTarea = usuarioTarea.Tarea.IdTarea, idUsuarioTarea = usuarioTarea.IdUsuarioTarea })">Eliminar</a>
-                                    <a class="btn btn-outline-info" onclick="editarTarea(@usuarioTarea.Tarea.IdTarea)">Editar</a>
+                                    <a class="btn btn-outline-danger" href="@Url.ActionLink("Delete", "UsuarioTarea", new { idTarea = usuarioTarea.Tarea.IdTarea, idUsuarioTarea = usuarioTarea.IdUsuarioTarea })">❌</a>
+                                    <a class="btn btn-outline-info" onclick="editarTarea(@usuarioTarea.Tarea.IdTarea)">✏️</a>
                                 </div>
                             </div>
                         </div>
